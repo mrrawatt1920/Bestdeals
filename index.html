@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmartDeal AI</title>
+    <style>
+      :root {
+        --bg: #f4f7fb;
+        --surface: #ffffff;
+        --text: #101828;
+        --muted: #667085;
+        --border: #e4e7ec;
+        --accent: #0f766e;
+        --accent-2: #14b8a6;
+        --accent-soft: #ccfbf1;
+        --shadow: 0 20px 60px rgba(16, 24, 40, 0.08);
+        --radius-xl: 28px;
+        --radius-lg: 22px;
+        --radius-md: 16px;
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Arial, sans-serif;
+        color: var(--text);
+        background:
+          radial-gradient(circle at top left, rgba(20, 184, 166, 0.12), transparent 28%),
+          linear-gradient(180deg, #ffffff 0%, var(--bg) 100%);
+      }
+      a { color: inherit; text-decoration: none; }
+      img { display: block; max-width: 100%; }
+      button, input { font: inherit; }
+      .container {
+        width: min(1220px, calc(100% - 24px));
+        margin: 0 auto;
+        padding: 24px 0 56px;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.94);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xl);
+        box-shadow: var(--shadow);
+      }
+      .topbar, .hero-grid, .hero-actions, .hero-stats, .platforms, .section-head, .advisor-layout, .step-row, .panel-actions, .carousel-inner, .meta-row, .result-footer, .slider-controls {
+        display: flex;
+      }
+      .topbar, .section-head, .panel-actions, .meta-row, .result-footer {
+        align-items: center;
+        justify-content: space-between;
+      }
+      .topbar { margin-bottom: 22px; }
+      .brand { display: flex; align-items: center; gap: 14px; }
+      .brand-mark {
+        width: 48px; height: 48px; border-radius: 16px; display: grid; place-items: center;
+        background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #fff; font-size: 1.3rem; font-weight: 800;
+      }
+      .eyebrow { margin: 0 0 4px; font-size: 0.76rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); font-weight: 800; }
+      h1, h2, h3, h4 { margin: 0; }
+      .button, .button-light, .icon-button, .option-card, .result-card, .trend-card, .mini-card {
+        transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+      }
+      .button:hover, .button-light:hover, .icon-button:hover, .option-card:hover, .result-card:hover, .trend-card:hover, .mini-card:hover {
+        transform: translateY(-3px);
+      }
+      .button, .button-light {
+        padding: 12px 18px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 700;
+      }
+      .button {
+        border: none; color: #fff; background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        box-shadow: 0 14px 32px rgba(15, 118, 110, 0.28);
+      }
+      .button-light, .icon-button {
+        border: 1px solid var(--border); background: #fff; color: var(--text);
+      }
+      .icon-button { width: 44px; height: 44px; border-radius: 999px; cursor: pointer; }
+      .hero-grid { gap: 22px; align-items: stretch; }
+      .hero-copy, .hero-side, .carousel, .advisor-panel, .side-card { padding: 28px; }
+      .hero-copy { flex: 1.1; }
+      .hero-side {
+        flex: 0.9;
+        background: linear-gradient(160deg, rgba(255,255,255,0.95), rgba(240,253,250,0.92)), #fff;
+      }
+      .pill, .badge, .tag, .platform-badge, .discount-badge {
+        display: inline-flex; align-items: center; justify-content: center; padding: 8px 12px; border-radius: 999px; font-size: 0.84rem; font-weight: 800;
+      }
+      .pill { background: var(--accent-soft); color: #115e59; }
+      .hero-copy h2 { margin-top: 14px; font-size: clamp(2rem, 5vw, 4rem); line-height: 1.04; }
+      .desc, .sub, .muted { color: var(--muted); line-height: 1.7; }
+      .hero-actions { gap: 12px; flex-wrap: wrap; margin: 24px 0; }
+      .credits { padding: 18px; border-radius: var(--radius-lg); border: 1px solid var(--border); background: rgba(255,255,255,0.78); }
+      .credits ul { margin: 12px 0 0; padding-left: 18px; color: var(--muted); line-height: 1.8; }
+      .live-chip {
+        display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 999px; border: 1px solid var(--border); background: #fff; font-weight: 700;
+      }
+      .dot { width: 10px; height: 10px; border-radius: 50%; background: #ef4444; }
+      .hero-stats { gap: 14px; flex-wrap: wrap; margin: 18px 0; }
+      .hero-stats article, .focus-box {
+        flex: 1; min-width: 140px; padding: 18px; border-radius: var(--radius-lg); border: 1px solid var(--border); background: rgba(255,255,255,0.86);
+      }
+      .hero-stats strong { display: block; font-size: 1.25rem; margin-bottom: 6px; }
+      .platforms { gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+      .platform-chip { color: #fff; font-weight: 800; padding: 10px 14px; border-radius: 999px; }
+      .amazon { background: #131921; } .flipkart { background: #2874f0; } .myntra { background: linear-gradient(135deg, #ff3f6c, #ff9068); } .ajio { background: #111827; }
+      .focus-box h3 { margin: 8px 0 12px; line-height: 1.4; }
+      .focus-tags { display: flex; gap: 10px; flex-wrap: wrap; }
+      .focus-tags span { background: var(--accent-soft); color: #115e59; padding: 8px 12px; border-radius: 999px; font-size: 0.84rem; font-weight: 700; }
+      section { padding-top: 34px; }
+      .section-head { gap: 16px; margin-bottom: 18px; }
+      .section-head h2 { margin-top: 4px; font-size: clamp(1.4rem, 2.5vw, 2.1rem); }
+      .carousel-inner { gap: 22px; align-items: center; }
+      .carousel-image {
+        flex: 1; min-height: 280px; border-radius: var(--radius-lg); overflow: hidden; background: linear-gradient(135deg, #f8fafc, #ecfeff);
+      }
+      .carousel-image img { width: 100%; height: 100%; object-fit: cover; }
+      .carousel-copy { flex: 1; }
+      .discount-badge { background: #fee2e2; color: #b91c1c; }
+      .carousel-copy h3 { margin-top: 16px; font-size: clamp(1.5rem, 3vw, 2.4rem); }
+      .dots { display: flex; gap: 10px; margin-top: 18px; }
+      .dots button { width: 10px; height: 10px; border: none; border-radius: 999px; background: #d0d5dd; padding: 0; cursor: pointer; }
+      .dots button.active { width: 30px; background: var(--accent); }
+      .search input { width: min(100%, 330px); padding: 14px 18px; border-radius: 999px; border: 1px solid var(--border); background: #fff; outline: none; }
+      .advisor-layout { gap: 20px; align-items: flex-start; }
+      .advisor-panel { flex: 1.3; }
+      .side-panel { flex: 0.8; display: grid; gap: 20px; }
+      .step-row { gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+      .step-pill { padding: 10px 14px; border-radius: 999px; background: #f2f4f7; color: var(--muted); font-weight: 800; }
+      .step-pill.active { background: var(--accent-soft); color: #115e59; }
+      .step-panel { display: none; min-height: 320px; }
+      .step-panel.active { display: block; }
+      .step-panel p { color: var(--muted); margin: 10px 0 20px; }
+      .grid, .results-grid, .trending-grid, .mini-list { display: grid; gap: 16px; }
+      .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .grid.compact { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .option-card { border: 1px solid var(--border); background: #fff; border-radius: var(--radius-lg); padding: 18px; cursor: pointer; }
+      .option-card.selected { background: linear-gradient(180deg, #ffffff, #f0fdfa); border-color: #99f6e4; box-shadow: 0 16px 30px rgba(15, 118, 110, 0.1); }
+      .icon-wrap { width: 50px; height: 50px; display: grid; place-items: center; border-radius: 16px; background: var(--accent-soft); color: #115e59; font-size: 1.2rem; margin-bottom: 16px; }
+      .panel-actions { margin-top: 20px; }
+      .mini-card { border: 1px solid var(--border); background: #fff; border-radius: var(--radius-md); padding: 16px; }
+      .results-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .result-card { background: rgba(255,255,255,0.95); border: 1px solid var(--border); border-radius: var(--radius-xl); overflow: hidden; box-shadow: var(--shadow); }
+      .result-image { aspect-ratio: 16 / 11; overflow: hidden; }
+      .result-image img { width: 100%; height: 100%; object-fit: cover; }
+      .result-body { padding: 18px; }
+      .tag { color: #fff; background: linear-gradient(135deg, var(--accent), var(--accent-2)); }
+      .platform-badge { background: #f2f4f7; }
+      .result-price { margin: 12px 0 6px; font-size: 1.5rem; font-weight: 800; }
+      .stars { color: #f59e0b; letter-spacing: 0.08em; }
+      .buy-link { color: #fff; background: #101828; padding: 10px 16px; border-radius: 999px; font-weight: 800; }
+      .count { color: var(--muted); font-weight: 700; }
+      .empty { display: none; padding: 28px; text-align: center; }
+      .empty.show { display: block; }
+      .trending-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .trend-card { background: rgba(255,255,255,0.95); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 18px; box-shadow: var(--shadow); }
+      .trend-card img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius-md); margin-bottom: 14px; }
+      @media (max-width: 1080px) {
+        .hero-grid, .advisor-layout, .carousel-inner { flex-direction: column; }
+        .results-grid, .trending-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      }
+      @media (max-width: 760px) {
+        .container { width: min(100% - 16px, 1220px); padding-top: 14px; }
+        .topbar, .section-head, .panel-actions { flex-direction: column; align-items: stretch; gap: 12px; }
+        .hero-copy, .hero-side, .carousel, .advisor-panel, .side-card { padding: 18px; }
+        .grid, .grid.compact, .results-grid, .trending-grid { grid-template-columns: 1fr; }
+        .carousel-image { min-height: 220px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="topbar">
+          <div class="brand">
+            <div class="brand-mark">S</div>
+            <div>
+              <p class="eyebrow">AI Shopping Advisor</p>
+              <h1>SmartDeal AI</h1>
+            </div>
+          </div>
+          <a class="button-light" href="https://github.com/" target="_blank" rel="noreferrer">Open Source</a>
+        </div>
+
+        <div class="hero-grid">
+          <section class="hero-copy card">
+            <span class="pill">Find the Best Deals in Seconds</span>
+            <h2>Your personal deal-hunting copilot across top marketplaces.</h2>
+            <p class="desc">
+              SmartDeal AI helps users compare curated picks from Amazon, Flipkart, Myntra and
+              more through a guided shopping flow, live deal banners, and budget-first
+              recommendations.
+            </p>
+
+            <div class="hero-actions">
+              <a class="button" href="#advisor">Start Smart Search</a>
+              <a class="button-light" href="#trending">Explore Trending</a>
+            </div>
+
+            <div class="credits">
+              <h3>Credits</h3>
+              <ul>
+                <li>Crafted by Abhay Rawat</li>
+                <li>Inspired by ChatGPT</li>
+                <li>Technical Support: CodeX</li>
+                <li><a href="https://github.com/" target="_blank" rel="noreferrer">Open Source on GitHub</a></li>
+                <li><a href="mailto:email.abhayrawatt1920@gmail.com">Contact: email.abhayrawatt1920@gmail.com</a></li>
+              </ul>
+            </div>
+          </section>
+
+          <aside class="hero-side card">
+            <div class="live-chip"><span class="dot"></span> Live Market Pulse</div>
+
+            <div class="hero-stats">
+              <article>
+                <strong>120+</strong>
+                <span>Curated deals</span>
+              </article>
+              <article>
+                <strong>4 Platforms</strong>
+                <span>Compared instantly</span>
+              </article>
+              <article>
+                <strong>Budget AI</strong>
+                <span>Price-aware picks</span>
+              </article>
+            </div>
+
+            <div class="platforms">
+              <div class="platform-chip amazon">Amazon</div>
+              <div class="platform-chip flipkart">Flipkart</div>
+              <div class="platform-chip myntra">Myntra</div>
+              <div class="platform-chip ajio">AJIO</div>
+            </div>
+
+            <div class="focus-box">
+              <p class="muted" style="margin:0;">Today's recommendation focus</p>
+              <h3>Top-rated daily essentials and value tech under your target budget</h3>
+              <div class="focus-tags">
+                <span>Best Deal</span>
+                <span>Budget Pick</span>
+                <span>High Performance</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </header>
+
+      <main>
+        <section id="live-deals">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Live Deals</p>
+              <h2>Hot picks rotating every 5 seconds</h2>
+            </div>
+            <div class="slider-controls">
+              <button class="icon-button" id="prevSlide" type="button" aria-label="Previous">←</button>
+              <button class="icon-button" id="nextSlide" type="button" aria-label="Next">→</button>
+            </div>
+          </div>
+
+          <div class="carousel card">
+            <a id="carouselLink" target="_blank" rel="noreferrer">
+              <div class="carousel-inner">
+                <div class="carousel-image">
+                  <img id="carouselImage" alt="Featured product" />
+                </div>
+                <div class="carousel-copy">
+                  <span class="discount-badge" id="carouselDiscount"></span>
+                  <h3 id="carouselTitle"></h3>
+                  <p class="sub" id="carouselMeta"></p>
+                  <strong style="color:#0f766e;">Tap to view deal</strong>
+                </div>
+              </div>
+            </a>
+            <div class="dots" id="carouselDots"></div>
+          </div>
+        </section>
+
+        <section id="advisor">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Guided Advisor</p>
+              <h2>Choose smarter in three simple steps</h2>
+            </div>
+            <div class="search">
+              <input id="searchInput" type="search" placeholder="Search products, brands, or platforms" />
+            </div>
+          </div>
+
+          <div class="advisor-layout">
+            <section class="advisor-panel card">
+              <div class="step-row">
+                <div class="step-pill active" data-step-indicator="1">1. Category</div>
+                <div class="step-pill" data-step-indicator="2">2. Subcategory</div>
+                <div class="step-pill" data-step-indicator="3">3. Budget</div>
+              </div>
+
+              <div class="step-panel active" data-step="1">
+                <h3>Select Category</h3>
+                <p>Start with a top-level category to unlock curated recommendations.</p>
+                <div class="grid" id="categoryGrid"></div>
+              </div>
+
+              <div class="step-panel" data-step="2">
+                <h3>Select Subcategory</h3>
+                <p>We tailor the results based on the niche you actually want.</p>
+                <div class="grid" id="subcategoryGrid"></div>
+              </div>
+
+              <div class="step-panel" data-step="3">
+                <h3>Select Price Range</h3>
+                <p>Choose a budget and SmartDeal AI will rank the strongest options.</p>
+                <div class="grid compact" id="budgetGrid"></div>
+              </div>
+
+              <div class="panel-actions">
+                <button class="button-light" id="backButton" type="button">Back</button>
+                <button class="button" id="resetButton" type="button">Reset</button>
+              </div>
+            </section>
+
+            <aside class="side-panel">
+              <div class="side-card card">
+                <p class="eyebrow">Shopping Signals</p>
+                <h3>Why this feels smarter</h3>
+                <ul class="muted" style="line-height:1.8; padding-left:18px; margin:14px 0 0;">
+                  <li>Dynamic filtering across category, subcategory, and budget</li>
+                  <li>Clear tags like Best Deal, Budget Pick, and High Performance</li>
+                  <li>Quick search with instant card refresh</li>
+                </ul>
+              </div>
+
+              <div class="side-card card">
+                <p class="eyebrow">Quick Access</p>
+                <h3>Under &#8377;999</h3>
+                <div class="mini-list" id="quickDeals"></div>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section id="results">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Smart Recommendations</p>
+              <h2>Top product matches for your budget and preferences</h2>
+            </div>
+            <div class="count" id="resultCount">Pick a path to see curated products</div>
+          </div>
+
+          <div class="results-grid" id="resultsGrid"></div>
+          <div class="empty card" id="emptyState">
+            <h3>No matching products found</h3>
+            <p class="muted">Try a different category, subcategory, budget, or a broader search keyword.</p>
+          </div>
+        </section>
+
+        <section id="trending">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow">Trending Deals</p>
+              <h2>What shoppers are watching right now</h2>
+            </div>
+          </div>
+          <div class="trending-grid" id="trendingGrid"></div>
+        </section>
+      </main>
+    <script>
+      const data = {
+        categories: [
+          { name: "Electronics", icon: "E", description: "Phones, laptops, audio gear, and everyday tech.", subcategories: ["Mobile", "Laptop", "Earphones"] },
+          { name: "Clothes", icon: "C", description: "Style-forward fashion picks across daily wear.", subcategories: ["T-Shirts", "Jeans", "Jackets"] },
+          { name: "Shoes", icon: "S", description: "Running, casual, and premium comfort footwear.", subcategories: ["Sneakers", "Running Shoes", "Sandals"] },
+          { name: "Home Essentials", icon: "H", description: "Kitchen, decor, and utility products for daily living.", subcategories: ["Kitchen", "Storage", "Decor"] }
+        ],
+        budgets: [
+          { id: "under-1000", label: "Under Rs 1000", min: 0, max: 999 },
+          { id: "1000-5000", label: "Rs 1000 - Rs 5000", min: 1000, max: 5000 },
+          { id: "5000-20000", label: "Rs 5000 - Rs 20000", min: 5001, max: 20000 },
+          { id: "20000-plus", label: "Rs 20000+", min: 20001, max: Number.POSITIVE_INFINITY }
+        ],
+        products: [
+          { name: "OnePlus Nord CE 4 Lite", price: 18999, rating: 4.4, category: "Electronics", subcategory: "Mobile", platform: "Amazon", image: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=900&q=80", link: "https://www.amazon.in/", tag: "Best Deal", discount: "32% OFF", trending: true, liveDeal: true },
+          { name: "iQOO Z9 Turbo Edition", price: 22999, rating: 4.5, category: "Electronics", subcategory: "Mobile", platform: "Flipkart", image: "https://images.unsplash.com/photo-1580910051074-3eb694886505?auto=format&fit=crop&w=900&q=80", link: "https://www.flipkart.com/", tag: "High Performance", discount: "28% OFF", trending: false, liveDeal: true },
+          { name: "Lenovo IdeaPad Slim 5", price: 58990, rating: 4.6, category: "Electronics", subcategory: "Laptop", platform: "Flipkart", image: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=900&q=80", link: "https://www.flipkart.com/", tag: "High Performance", discount: "21% OFF", trending: true, liveDeal: true },
+          { name: "Realme Buds Wireless 3 Neo", price: 1799, rating: 4.2, category: "Electronics", subcategory: "Earphones", platform: "Amazon", image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=900&q=80", link: "https://www.amazon.in/", tag: "Budget Pick", discount: "55% OFF", trending: true, liveDeal: false },
+          { name: "Noise Air Clips", price: 999, rating: 4.1, category: "Electronics", subcategory: "Earphones", platform: "Amazon", image: "https://images.unsplash.com/photo-1572569511254-d8f925fe2cbb?auto=format&fit=crop&w=900&q=80", link: "https://www.amazon.in/", tag: "Budget Pick", discount: "47% OFF", trending: false, liveDeal: false },
+          { name: "Oversized Cotton T-Shirt", price: 799, rating: 4.3, category: "Clothes", subcategory: "T-Shirts", platform: "Myntra", image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=900&q=80", link: "https://www.myntra.com/", tag: "Budget Pick", discount: "60% OFF", trending: true, liveDeal: false },
+          { name: "Classic Blue Slim Jeans", price: 1499, rating: 4.2, category: "Clothes", subcategory: "Jeans", platform: "Flipkart", image: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?auto=format&fit=crop&w=900&q=80", link: "https://www.flipkart.com/", tag: "Best Deal", discount: "40% OFF", trending: false, liveDeal: false },
+          { name: "All-Weather Bomber Jacket", price: 3299, rating: 4.5, category: "Clothes", subcategory: "Jackets", platform: "Myntra", image: "https://images.unsplash.com/photo-1521223890158-f9f7c3d5d504?auto=format&fit=crop&w=900&q=80", link: "https://www.myntra.com/", tag: "High Performance", discount: "50% OFF", trending: true, liveDeal: true },
+          { name: "StreetFlex Sneakers", price: 2799, rating: 4.4, category: "Shoes", subcategory: "Sneakers", platform: "Myntra", image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=80", link: "https://www.myntra.com/", tag: "Best Deal", discount: "35% OFF", trending: true, liveDeal: true },
+          { name: "Nike Downshifter Run", price: 4299, rating: 4.6, category: "Shoes", subcategory: "Running Shoes", platform: "Amazon", image: "https://images.unsplash.com/photo-1543508282-6319a3e2621f?auto=format&fit=crop&w=900&q=80", link: "https://www.amazon.in/", tag: "High Performance", discount: "25% OFF", trending: true, liveDeal: false },
+          { name: "Daily Comfort Sandals", price: 899, rating: 4.0, category: "Shoes", subcategory: "Sandals", platform: "Flipkart", image: "https://images.unsplash.com/photo-1603487742131-4160ec999306?auto=format&fit=crop&w=900&q=80", link: "https://www.flipkart.com/", tag: "Budget Pick", discount: "52% OFF", trending: false, liveDeal: false },
+          { name: "Non-Stick Cookware Set", price: 2199, rating: 4.3, category: "Home Essentials", subcategory: "Kitchen", platform: "Amazon", image: "https://images.unsplash.com/photo-1517705008128-361805f42e86?auto=format&fit=crop&w=900&q=80", link: "https://www.amazon.in/", tag: "Best Deal", discount: "44% OFF", trending: true, liveDeal: true },
+          { name: "Modular Storage Organizer", price: 949, rating: 4.1, category: "Home Essentials", subcategory: "Storage", platform: "Flipkart", image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=900&q=80", link: "https://www.flipkart.com/", tag: "Budget Pick", discount: "39% OFF", trending: false, liveDeal: false },
+          { name: "Minimal Table Lamp", price: 1299, rating: 4.4, category: "Home Essentials", subcategory: "Decor", platform: "AJIO", image: "https://images.unsplash.com/photo-1484101403633-562f891dc89a?auto=format&fit=crop&w=900&q=80", link: "https://www.ajio.com/", tag: "High Performance", discount: "31% OFF", trending: true, liveDeal: false },
+          { name: "HP 15 Ryzen Productivity Laptop", price: 47999, rating: 4.3, category: "Electronics", subcategory: "Laptop", platform: "Amazon", image: "https://images.unsplash.com/photo-1517336714739-489689fd1ca8?auto=format&fit=crop&w=900&q=80", link: "https://www.amazon.in/", tag: "Best Deal", discount: "19% OFF", trending: false, liveDeal: false },
+          { name: "Campus Sprint Runner", price: 1999, rating: 4.2, category: "Shoes", subcategory: "Running Shoes", platform: "Flipkart", image: "https://images.unsplash.com/photo-1460353581641-37baddab0fa2?auto=format&fit=crop&w=900&q=80", link: "https://www.flipkart.com/", tag: "Budget Pick", discount: "48% OFF", trending: false, liveDeal: false },
+          { name: "Printed Casual Shirt", price: 999, rating: 4.0, category: "Clothes", subcategory: "T-Shirts", platform: "Myntra", image: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=900&q=80", link: "https://www.myntra.com/", tag: "Best Deal", discount: "58% OFF", trending: false, liveDeal: false }
+        ]
+      };
+
+      const state = { category: "", subcategory: "", budget: "", search: "", step: 1, slide: 0 };
+      const liveDeals = data.products.filter(function (item) { return item.liveDeal; });
+      const categoryGrid = document.getElementById("categoryGrid");
+      const subcategoryGrid = document.getElementById("subcategoryGrid");
+      const budgetGrid = document.getElementById("budgetGrid");
+      const resultsGrid = document.getElementById("resultsGrid");
+      const trendingGrid = document.getElementById("trendingGrid");
+      const quickDeals = document.getElementById("quickDeals");
+      const emptyState = document.getElementById("emptyState");
+      const resultCount = document.getElementById("resultCount");
+      const searchInput = document.getElementById("searchInput");
+      const stepPanels = document.querySelectorAll(".step-panel");
+      const stepIndicators = document.querySelectorAll(".step-pill");
+
+      function formatPrice(price) {
+        return new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(price);
+      }
+
+      function stars(rating) {
+        const rounded = Math.round(rating);
+        return "★".repeat(rounded) + "☆".repeat(5 - rounded);
+      }
+
+      function updateSteps() {
+        stepPanels.forEach(function (panel) { panel.classList.toggle("active", Number(panel.dataset.step) === state.step); });
+        stepIndicators.forEach(function (pill) { pill.classList.toggle("active", Number(pill.dataset.stepIndicator) === state.step); });
+        document.getElementById("backButton").disabled = state.step === 1;
+      }
+
+      function makeOptionCard(title, description, icon, selected, onClick) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "option-card" + (selected ? " selected" : "");
+        button.innerHTML = "<div class='icon-wrap'>" + icon + "</div><h4>" + title + "</h4><p class='sub'>" + description + "</p>";
+        button.addEventListener("click", onClick);
+        return button;
+      }
+
+      function renderCategories() {
+        categoryGrid.innerHTML = "";
+        data.categories.forEach(function (item) {
+          categoryGrid.appendChild(makeOptionCard(item.name, item.description, item.icon, state.category === item.name, function () {
+            state.category = item.name;
+            state.subcategory = "";
+            state.budget = "";
+            state.step = 2;
+            renderAll();
+          }));
+        });
+      }
+
+      function renderSubcategories() {
+        subcategoryGrid.innerHTML = "";
+        const selected = data.categories.find(function (item) { return item.name === state.category; });
+        if (!selected) {
+          subcategoryGrid.innerHTML = "<div class='muted'>Select a category first.</div>";
+          return;
+        }
+        selected.subcategories.forEach(function (item) {
+          subcategoryGrid.appendChild(makeOptionCard(item, "Focused recommendations for " + item.toLowerCase() + ".", ">", state.subcategory === item, function () {
+            state.subcategory = item;
+            state.budget = "";
+            state.step = 3;
+            renderAll();
+          }));
+        });
+      }
+
+      function renderBudgets() {
+        budgetGrid.innerHTML = "";
+        data.budgets.forEach(function (item) {
+          budgetGrid.appendChild(makeOptionCard(item.label, "Smart filtering by price range.", "Rs", state.budget === item.id, function () {
+            state.budget = item.id;
+            renderAll();
+            document.getElementById("results").scrollIntoView({ behavior: "smooth", block: "start" });
+          }));
+        });
+      }
+
+      function filteredProducts() {
+        return data.products.filter(function (item) {
+          const byCategory = state.category ? item.category === state.category : true;
+          const bySubcategory = state.subcategory ? item.subcategory === state.subcategory : true;
+          const budget = data.budgets.find(function (entry) { return entry.id === state.budget; });
+          const byBudget = budget ? item.price >= budget.min && item.price <= budget.max : true;
+          const keyword = state.search.trim().toLowerCase();
+          const haystack = [item.name, item.platform, item.category, item.subcategory].join(" ").toLowerCase();
+          const bySearch = keyword ? haystack.indexOf(keyword) !== -1 : true;
+          return byCategory && bySubcategory && byBudget && bySearch;
+        }).sort(function (a, b) {
+          if (b.rating !== a.rating) return b.rating - a.rating;
+          return a.price - b.price;
+        }).slice(0, 5);
+      }
+
+      function renderResults() {
+        const items = filteredProducts();
+        resultsGrid.innerHTML = "";
+        if (!state.category && !state.search) {
+          resultCount.textContent = "Pick a path to see curated products";
+          emptyState.classList.remove("show");
+          return;
+        }
+        resultCount.textContent = items.length + (items.length === 1 ? " smart recommendation" : " smart recommendations");
+        if (!items.length) {
+          emptyState.classList.add("show");
+          return;
+        }
+        emptyState.classList.remove("show");
+        items.forEach(function (item) {
+          const article = document.createElement("article");
+          article.className = "result-card";
+          article.innerHTML =
+            "<div class='result-image'><img src='" + item.image + "' alt='" + item.name + "'></div>" +
+            "<div class='result-body'>" +
+            "<div class='meta-row'><span class='tag'>" + item.tag + "</span><span class='platform-badge'>" + item.platform + "</span></div>" +
+            "<h3 style='margin-top:14px;'>" + item.name + "</h3>" +
+            "<p class='sub'>" + item.category + " | " + item.subcategory + "</p>" +
+            "<div class='result-price'>" + formatPrice(item.price) + "</div>" +
+            "<p class='sub'><span class='stars'>" + stars(item.rating) + "</span> " + item.rating + "/5 rating</p>" +
+            "<div class='result-footer'><span class='platform-badge'>" + item.discount + "</span><a class='buy-link' href='" + item.link + "' target='_blank' rel='noreferrer'>Buy Now</a></div>" +
+            "</div>";
+          resultsGrid.appendChild(article);
+        });
+      }
+
+      function renderTrending() {
+        trendingGrid.innerHTML = "";
+        data.products.filter(function (item) { return item.trending; }).slice(0, 8).forEach(function (item) {
+          const article = document.createElement("article");
+          article.className = "trend-card";
+          article.innerHTML =
+            "<img src='" + item.image + "' alt='" + item.name + "'>" +
+            "<div class='meta-row'><span class='platform-badge'>" + item.platform + "</span><span class='platform-badge'>" + item.discount + "</span></div>" +
+            "<h3 style='margin-top:14px;'>" + item.name + "</h3>" +
+            "<p class='sub' style='margin-top:8px;'>" + item.tag + " | " + formatPrice(item.price) + "</p>";
+          trendingGrid.appendChild(article);
+        });
+      }
+
+      function renderQuickDeals() {
+        quickDeals.innerHTML = "";
+        data.products.filter(function (item) { return item.price <= 999; }).slice(0, 4).forEach(function (item) {
+          const card = document.createElement("a");
+          card.className = "mini-card";
+          card.href = item.link;
+          card.target = "_blank";
+          card.rel = "noreferrer";
+          card.innerHTML =
+            "<div class='meta-row'><h4>" + item.name + "</h4><span class='platform-badge'>" + formatPrice(item.price) + "</span></div>" +
+            "<p class='sub' style='margin-top:8px;'>" + item.platform + " | " + item.tag + "</p>";
+          quickDeals.appendChild(card);
+        });
+      }
+
+      function renderCarousel() {
+        const deal = liveDeals[state.slide];
+        const dots = document.getElementById("carouselDots");
+        document.getElementById("carouselImage").src = deal.image;
+        document.getElementById("carouselTitle").textContent = deal.name;
+        document.getElementById("carouselDiscount").textContent = deal.discount;
+        document.getElementById("carouselMeta").textContent = deal.platform + " | " + deal.tag + " | " + formatPrice(deal.price);
+        document.getElementById("carouselLink").href = deal.link;
+        dots.innerHTML = "";
+        liveDeals.forEach(function (_, index) {
+          const dot = document.createElement("button");
+          dot.type = "button";
+          dot.className = index === state.slide ? "active" : "";
+          dot.addEventListener("click", function () {
+            state.slide = index;
+            renderCarousel();
+          });
+          dots.appendChild(dot);
+        });
+      }
+
+      function renderAll() {
+        renderCategories();
+        renderSubcategories();
+        renderBudgets();
+        renderResults();
+        updateSteps();
+      }
+
+      document.getElementById("nextSlide").addEventListener("click", function () {
+        state.slide = (state.slide + 1) % liveDeals.length;
+        renderCarousel();
+      });
+      document.getElementById("prevSlide").addEventListener("click", function () {
+        state.slide = (state.slide - 1 + liveDeals.length) % liveDeals.length;
+        renderCarousel();
+      });
+      document.getElementById("backButton").addEventListener("click", function () {
+        if (state.step > 1) {
+          state.step -= 1;
+          updateSteps();
+        }
+      });
+      document.getElementById("resetButton").addEventListener("click", function () {
+        state.category = "";
+        state.subcategory = "";
+        state.budget = "";
+        state.search = "";
+        state.step = 1;
+        searchInput.value = "";
+        renderAll();
+      });
+      searchInput.addEventListener("input", function (event) {
+        state.search = event.target.value;
+        renderResults();
+      });
+      renderCarousel();
+      renderTrending();
+      renderQuickDeals();
+      renderAll();
+      setInterval(function () {
+        state.slide = (state.slide + 1) % liveDeals.length;
+        renderCarousel();
+      }, 5000);
+    </script>
+    </div>
+  </body>
+</html>
